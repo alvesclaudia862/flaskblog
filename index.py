@@ -22,7 +22,6 @@ mysql = MySQL(app)
 
 @app.route('/')  # Define a rota para a URL raiz ('/')
 def home():  # Função executada quando '/' é acessado
-
     '''
     Recebe a lista de artigos do banco de dados:
         • Somente os campos necesários
@@ -39,16 +38,16 @@ def home():  # Função executada quando '/' é acessado
     cur.execute(sql)
     articles = cur.fetchall()
     cur.close()
-    
+
     # Debug: mostra o resultado no console
     # print('\n\n\n',articles, '\n\n\n')
- 
+
     # Variável da página HTML
     toPage = {
         # Valor da tag <title> → Título da página
         'title': 'FlaskBlog',
         # Nome da folha de estilos desta página (opcional)
-        # 'css': 'home.css',
+        'css': 'home.css',
         # Nome do JavaScript desta página (opcional)
         'js': 'home.js',
         # Outros pares "chave" : "valor" entram aqui
@@ -58,6 +57,13 @@ def home():  # Função executada quando '/' é acessado
     # Abre a página de template → layout.html
     # Passa a variável local `toPage` para o template como `page`
     return render_template('home.html', page=toPage)
+
+# Rota que exibe o artigo completo
+
+
+@app.route('/view/<artid>')
+def view(artid):
+    return artid
 
 
 @app.route('/contacts')  # Define a rota para a URL '/contatos'
