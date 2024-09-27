@@ -9,22 +9,24 @@
     {% if page.css %}
     <link rel="stylesheet" href="/static/css/{{ page.css }}">
     {% endif %}
-    <title>{{page.title}}</title>
+    <link rel="shortcut icon" href="/static/img/favicon.alpha.png" type="image/x-icon">
+    {# Título da página #}
+    <title>{{ page.title }}</title>
 </head>
 
 <body>
-    
+
     <div id="wrap">
 
         <header>
             <div>
-            <a href="/"><i class="fa-solid fa-camera-retro fa-fw fa-4x"></i></a>
-            <h1>FlaskBlog</h1>
-        </div>
-        <form action="search.html" method="get">
-            <input type="search" name="q" placeholder="Procurar">
-            <button type="submit"><i class="fa-solid fa-magnifying-glass fa-fw"></i></button>
-        </form>
+                <a href="/"><i class="fa-solid fa-camera-retro fa-fw fa-4x"></i></a>
+                <h1>FlaskBlog</h1>
+            </div>
+            <form action="search.html" method="get">
+                <input type="search" name="q" placeholder="Procurar">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass fa-fw"></i></button>
+            </form>
         </header>
 
         <nav>
@@ -36,19 +38,21 @@
                 <i class="fa-solid fa-comments fa-fw"></i>
                 <span>Contatos</span>
             </a>
-            <a href="/">
+            <a href="/about">
                 <i class="fa-solid fa-circle-info fa-fw"></i>
                 <span>Sobre</span>
-            </a> 
+            </a>
         </nav>
 
         <main>
 
+            {# Carrega o bloco `article` da página original #}
             <article>{% block article %}{% endblock%}</article>
-            
+
+            {# Carrega o bloco `aside` da página original #}
             <aside>{% block aside %}{%endblock %}</aside>
-            
-        </main>    
+
+        </main>
 
         <footer>
             <a href="/">
@@ -77,4 +81,4 @@
 
 </body>
 
-</html
+</html>

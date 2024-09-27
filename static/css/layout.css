@@ -170,13 +170,11 @@ button {
 }
 
 /* Article */
-
 #wrap>main>article {
     background-color: rgba(255, 255, 255, 0.8);
 }
 
 /* Aside */
-
 #wrap>main>aside {
     background-color: #ddd;
     border-top: 4px dotted rgb(128, 128, 128);
@@ -272,6 +270,11 @@ button {
 
     #wrap>header>div {
         flex-grow: 1;
+    }
+
+    #wrap>header>form {
+        min-width: 280px;
+        max-width: 280px;
     }
 
 }
