@@ -1,9 +1,10 @@
 # Importa a classe Flask do módulo flask
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 # Importa a bilbioteca de acesso ao MySQL
 from flask_mysqldb import MySQL, MySQLdb
 # Importa todas funções dos artigos de `db_articles`
 from functions.db_articles import *
+from functions.db_contacts import save_contact
 
 # Cria uma instância da aplicação Flask
 app = Flask(__name__)
@@ -64,9 +65,9 @@ def view(artid):
     # Debug → Comente-me!
     # print('\n\n\n', article, '\n\n\n')
 
-    #Atualiza visualizações do artigo
+    # Atualiza vsualizações do artigo
     update_views(mysql, article['art_id'])
-   
+
     # Obtém mais artigos do autor
     articles = get_by_author(mysql, article['sta_id'], article['art_id'])
 
@@ -91,14 +92,39 @@ def view(artid):
     return render_template('view.html', page=toPage)
 
 
-@app.route('/contacts')  # Define a rota para a URL '/contatos'
+# Define a rota para a URL '/contatos'
+@app.route('/contacts', methods=['GET', 'POST'])
 def contacts():  # Função executada quando '/contacts' é acessado
+
+    # Formulário não enviado
+    success = False
+
+    # Primeiro nome do remetente
+    first = ''
+
+    # Se o formulário foi enviado
+    if request.method == 'POST':
+
+        # Recebe os dados do front-end (form)
+        form = dict(request.form)
+
+        # print('\n\n\n', form, '\n\n\n')
+
+        # Salva contato no banco de dados
+        success = save_contact(mysql, form)
+
+        # Obtém o primeiro nome do remetente
+        first = form['name'].split()[0]
 
     # Variável da página HTML
     toPage = {
         'title': 'Faça contato',
-        'css': 'contacts.css'
+        'css': 'contacts.css',
+        'success': success,
+        'first': first
     }
+
+    print('\n\n\n', toPage, '\n\n\n')
 
     # Retorna uma mensagem simples
     return render_template('contacts.html', page=toPage)
@@ -117,3 +143,4 @@ def page_not_found(e):
 if __name__ == '__main__':
     # Inicia o servidor Flask em modo debug
     app.run(debug=True)
+
