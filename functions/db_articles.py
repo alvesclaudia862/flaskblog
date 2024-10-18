@@ -52,26 +52,23 @@ def get_one(mysql, artid):  # Obtém 1 artigo pelo id com os dados do autor
     '''
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute(sql, (artid,))
-    articles = cur.fetchone()
+    article = cur.fetchone()
     cur.close()
 
-    return articles
+    return article
 
 
-def get_by_author(mysql, staid, artid, limit = 4):
-    
-    
-    
+def get_by_author(mysql, staid, artid, limit=4): # Obtém as artigos do author
+
     sql = '''
-        -- Seleciona os campos abaixo da tabela `article`
         SELECT art_id, art_title, art_thumbnail 
         FROM article
-        WHERE art_author = %s 
-            AND art_id != %s  
-            AND art_status = 'on' 
-            AND art_date <= NOW() 
-        ORDER BY RAND() 
-        LIMIT %s 
+        WHERE art_author = %s
+            AND art_id != %s
+            AND art_status = 'on'
+            AND art_date <= NOW()
+        ORDER BY RAND()
+        LIMIT %s
     '''
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute(sql, (staid, artid, limit,))
@@ -80,9 +77,7 @@ def get_by_author(mysql, staid, artid, limit = 4):
 
     return articles
 
-
-
-def update_views(mysql, artid): #Atualiza as visualizações
+def update_views(mysql, artid): # Atualiza as visualizações do artigo
 
     sql = '''
         UPDATE article 
@@ -95,3 +90,49 @@ def update_views(mysql, artid): #Atualiza as visualizações
     cur.close()
 
     return True
+
+
+def most_viewed(mysql, limit = 4):
+
+    sql = '''
+        SELECT art_id, art_title, art_thumbnail
+        FROM article 
+        WHERE art_status = 'on'
+            AND art_date <= NOW()
+        ORDER BY art_views DESC
+        LIMIT %s
+    '''
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute(sql, (limit,))
+    articles = cur.fetchall()
+    cur.close()
+
+    return articles
+
+def most_commented(mysql, limit=4):
+    sql = '''
+        SELECT 
+            a.art_id, 
+            a.art_title, 
+            a.art_thumbnail,
+            COUNT(c.com_id) AS total_comments
+        FROM 
+            article a
+        LEFT JOIN 
+            comment c ON a.art_id = c.com_article AND c.com_status = 'on'
+        WHERE 
+            a.art_status = 'on' AND a.art_date <= NOW()
+        GROUP BY 
+            a.art_id, a.art_title, a.art_thumbnail
+        HAVING 
+            total_comments > 0
+        ORDER BY 
+            total_comments DESC
+        LIMIT %s;
+    '''
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute(sql, (limit,))
+    articles = cur.fetchall()
+    cur.close()
+
+    return articles
